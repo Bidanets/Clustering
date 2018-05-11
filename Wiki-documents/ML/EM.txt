@@ -1,0 +1,49 @@
+EM-алгоритм
+
+EM-алгоритм (англ. Expectation-maximization (EM) algorithm) — алгоритм, используемый в математической статистике для нахождения оценок максимального правдоподобия параметров вероятностных моделей, в случае, когда модель зависит от некоторых скрытых переменных. Каждая итерация алгоритма состоит из двух шагов. На E-шаге (expectation) вычисляется ожидаемое значение функции правдоподобия, при этом скрытые переменные рассматриваются как наблюдаемые. На M-шаге (maximization) вычисляется оценка максимального правдоподобия, таким образом увеличивается ожидаемое правдоподобие, вычисляемое на E-шаге. Затем это значение используется для E-шага на следующей итерации. Алгоритм выполняется до сходимости.
+
+Часто EM-алгоритм используют для разделения смеси гауссиан.
+
+Содержание
+1	Описание алгоритма
+2	Альтернативное описание
+3	Примеры использования
+4	Примечания
+5	Ссылки
+Описание алгоритма
+Пусть {\displaystyle {\textbf {X}}} {\textbf  {X}} — некоторые из значений наблюдаемых переменных, а {\displaystyle {\textbf {T}}} {\textbf  {T}} — скрытые переменные. Вместе {\displaystyle {\textbf {X}}} {\textbf  {X}} и {\displaystyle {\textbf {T}}} {\textbf  {T}} образуют полный набор данных. Вообще, {\displaystyle {\textbf {T}}} {\textbf  {T}} может быть некоторой подсказкой, которая облегчает решение проблемы в случае, если она известна. Например, если имеется смесь распределений, функция правдоподобия легко выражается через параметры отдельных распределений смеси.
+
+Положим {\displaystyle p} p — плотность вероятности (в непрерывном случае) или функция вероятности (в дискретном случае) полного набора данных с параметрами {\displaystyle \Theta } \Theta : {\displaystyle p(\mathbf {X} ,\mathbf {T} |\Theta ).} p({\mathbf  X},{\mathbf  T}|\Theta ). Эту функцию можно понимать как правдоподобие всей модели, если рассматривать её как функцию параметров {\displaystyle \Theta } \Theta . Заметим, что условное распределение скрытой компоненты при некотором наблюдении и фиксированном наборе параметров может быть выражено так:
+
+{\displaystyle p(\mathbf {T} |\mathbf {X} ,\Theta )={\frac {p(\mathbf {X} ,\mathbf {T} |\Theta )}{p(\mathbf {X} |\Theta )}}={\frac {p(\mathbf {X} |\mathbf {T} ,\Theta )p(\mathbf {T} |\Theta )}{\int p(\mathbf {X} |\mathbf {\hat {T}} ,\Theta )p(\mathbf {\hat {T}} |\Theta )d\mathbf {\hat {T}} }}} p({\mathbf  T}|{\mathbf  X},\Theta )={\frac  {p({\mathbf  X},{\mathbf  T}|\Theta )}{p({\mathbf  X}|\Theta )}}={\frac  {p({\mathbf  X}|{\mathbf  T},\Theta )p({\mathbf  T}|\Theta )}{\int p({\mathbf  X}|{\mathbf  {{\hat  {T}}}},\Theta )p({\mathbf  {{\hat  {T}}}}|\Theta )d{\mathbf  {{\hat  {T}}}}}},
+используя расширенную формулу Байеса и формулу полной вероятности. Таким образом, нам необходимо знать только распределение наблюдаемой компоненты при фиксированной скрытой {\displaystyle p(\mathbf {X} |\mathbf {T} ,\Theta )} p({\mathbf  X}|{\mathbf  T},\Theta ) и вероятности скрытых данных {\displaystyle p(\mathbf {T} |\Theta )} p({\mathbf  T}|\Theta ).
+
+EM-алгоритм итеративно улучшает начальную оценку {\displaystyle \Theta _{0}} \Theta _{0}, вычисляя новые значения оценок {\displaystyle \Theta _{1},\Theta _{2},} \Theta _{1},\Theta _{2}, и так далее. На каждом шаге переход к {\displaystyle \Theta _{n+1}} \Theta _{{n+1}} от {\displaystyle \Theta _{n}} \Theta_n выполняется следующим образом:
+
+{\displaystyle \Theta _{n+1}=\arg \max _{\Theta }Q(\Theta )} \Theta _{{n+1}}=\arg \max _{{\Theta }}Q(\Theta )
+где {\displaystyle Q(\Theta )} Q(\Theta ) — матожидание логарифма правдоподобия. Другими словами, мы не можем сразу вычислить точное правдоподобие, но по известным данным ( {\displaystyle X} X) мы можем найти апостериорную оценку вероятностей для различных значений скрытых переменных {\displaystyle T} T. Для каждого набора значений {\displaystyle T} T и параметров {\displaystyle \Theta } \Theta  мы можем вычислить матожидание функции правдоподобия по данному набору {\displaystyle X} X. Оно зависит от предыдущего значения {\displaystyle \Theta } \Theta , потому что это значение влияет на вероятности скрытых переменных {\displaystyle T} T.
+
+{\displaystyle Q(\Theta )} Q(\Theta ) вычисляется следующим образом:
+
+{\displaystyle Q(\Theta )=E_{\mathbf {T} }\!\!\left[\log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right){\Big |}\mathbf {X} \right]} Q(\Theta )=E_{{{\mathbf  T}}}\!\!\left[\log p\left({\mathbf  X},{\mathbf  T}\,|\,\Theta \right){\Big |}{\mathbf  X}\right]
+то есть это условное матожидание {\displaystyle \log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right)} \log p\left({\mathbf  X},{\mathbf  T}\,|\,\Theta \right) при условии {\displaystyle \Theta } \Theta .
+
+Другими словами, {\displaystyle \Theta _{n+1}} \Theta _{{n+1}} — это значение, максимизирующее (M) условное матожидание (E) логарифма правдоподобия при данных значениях наблюдаемых переменных и предыдущем значении параметров. В непрерывном случае значение {\displaystyle Q(\Theta )} Q(\Theta ) вычисляется так:
+
+{\displaystyle Q(\Theta )=E_{\mathbf {T} }\!\!\left[\log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right){\Big |}\mathbf {X} \right]=\int _{-\infty }^{\infty }p\left(\mathbf {T} \,|\,\mathbf {X} ,\Theta _{n}\right)\log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right)d\mathbf {T} } {\displaystyle Q(\Theta )=E_{\mathbf {T} }\!\!\left[\log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right){\Big |}\mathbf {X} \right]=\int _{-\infty }^{\infty }p\left(\mathbf {T} \,|\,\mathbf {X} ,\Theta _{n}\right)\log p\left(\mathbf {X} ,\mathbf {T} \,|\,\Theta \right)d\mathbf {T} }
+Альтернативное описание
+При определенных обстоятельствах удобно рассматривать EM-алгоритм как два чередующихся шага максимизации.[1][2] Рассмотрим функцию:
+
+{\displaystyle F(q,\theta )=\operatorname {E} _{q}[\log L(\theta ;x,Z)]+H(q)=-D_{\text{KL}}{\big (}q{\big \|}p_{Z|X}(\cdot |x;\theta ){\big )}+\log L(\theta ;x)} F(q,\theta )=\operatorname {E}_{q}[\log L(\theta ;x,Z)]+H(q)=-D_{{{\text{KL}}}}{\big (}q{\big \|}p_{{Z|X}}(\cdot |x;\theta ){\big )}+\log L(\theta ;x)
+где q — распределение вероятностей ненаблюдаемых переменных Z; pZ|X(· |x;θ) — условное распределение ненаблюдаемых переменных при фиксированных наблюдаемых x и параметрах θ; H — энтропия и DKL — расстояние Кульбака-Лейблера.
+
+Тогда шаги EM-алгоритма можно представить как:
+
+E(xpectation) шаг: Выбираем q, чтобы максимизировать F:
+{\displaystyle q^{(t)}=\operatorname {*} {arg\,max}_{q}\ F(q,\theta ^{(t)})} q^{{(t)}}=\operatorname *{arg\,max}_{q}\ F(q,\theta ^{{(t)}})
+M(aximization) шаг: Выбираем θ, чтобы максимизировать F:
+{\displaystyle \theta ^{(t+1)}=\operatorname {*} {\arg \,max}_{\theta }\ F(q^{(t)},\theta )} \theta ^{{(t+1)}}=\operatorname *{\arg \,max}_{{\theta }}\ F(q^{{(t)}},\theta )
+Примеры использования
+k-means — алгоритм кластеризации, построенный на идее EM-алгоритма
+Метод упругих карт для нелинейного сокращения размерности данных
+Алгоритм Баума-Велша — алгоритм для оценки параметров скрытых марковских моделей
